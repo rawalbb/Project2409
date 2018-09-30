@@ -61,6 +61,29 @@ public class Project2 {
 
     public static void softActivation(double trainingData, double learning, ArrayList<Person> list) {
 
+        double net = 0.0;
+        double weightMultiplier = 0.0;
+        double[] weights = new double[3];
+        double[] weightChange = new double[3];
+        double error = 0;
+
+        while (error > 0.00005) {
+            for (int i = 0; i < (list.size() * trainingData); i++) {
+                int out;
+                net = ((list.get(i).getHeight() * weights[0]) + (list.get(i).getHeight() * weights[1])
+                        + (list.get(i).getGender() * weights[2]));
+                
+                out = 1 / ( 1 + Math.exp(net * -1));
+                weightMultiplier = learning * (list.get(i).getGender() - out);
+                weightChange[0] = list.get(i).getHeight() * weightMultiplier;
+                weightChange[1] = list.get(i).getWeight() * weightMultiplier;
+                weightChange[2] = list.get(i).getGender() * weightMultiplier;
+
+                for (int j = 0; j < weights.length; j++) {
+                    weights[j] = weights[j] - weightChange[j];
+                }
+            }
+        }
     }
 }
 
