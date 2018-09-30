@@ -32,6 +32,10 @@ public class Project2 {
 		double weightMultiplier = 0.0;
 		double[] weights = new double[3];
 		double[] weightChange = new double[3];
+		double error = 0;
+		
+		while (error>.00005)
+		{
 		for(int i =0;i<((list.size())*trainingData); i++)
 		{
 			int out;
@@ -53,6 +57,7 @@ public class Project2 {
 			{
 				weights[j] = weights[j]-weightChange[j];
 			}
+		}
 		}
 
     }
