@@ -37,13 +37,14 @@ public class Project2 {
         double weightMultiplier = 0.0;
         double[] weights = {10897,20976,0};
         double[] weightChange = new double[3];
-        double error = 0;
+        double error = 10;
 
         int count = 0;//todo delete
 
 
-        while (error > 0.00005 | count!=10) {
-            for (int i = 0; i < (list.size() * trainingData); i++) {
+   //     while (error > 0.00005 | count!=10) {
+            for (int i = 0; i < 10 //(list.size() * trainingData)
+                    ; i++) {
                 int out;
                 net = ((list.get(i).getHeight() * weights[0]) + (list.get(i).getHeight() * weights[1])
                         + (list.get(i).getGender() * weights[2]));
@@ -65,7 +66,7 @@ public class Project2 {
             count++;
         }
 
-    }
+//    }
 
     public static void softActivation(double trainingData, double learning, List<Person> list) {
 
@@ -99,7 +100,30 @@ public class Project2 {
     public static double errorCalculation(List<Person> list, double dataSize, double[] weights){
         double error = 0;
         int out;
-        for(int i = (int) (dataSize*4000); i<list.size(); i++ ) {
+        double correctCount = 0;
+        double incorrectCount = 0;
+
+//        for(int i = 10; i<20;     //list.size();
+//            i++ ) {
+//
+//            double net = ((list.get(i).getHeight()  * weights[0]) + (list.get(i).getHeight() * weights[1])
+//                    + (list.get(i).getGender() * weights[2]));
+//
+//            if (net > 0) {
+//                out = 1;
+//            } else {
+//                out = 0;
+//            }
+//
+//            //if (list.get(i).getGender() == Math.round(out)) {
+//            //numMenCorrect++;
+//                error += Math.pow(list.get(i).getGender() - out, 2);
+//           // }
+//        }
+
+
+
+        for (int i = (int) (list.size()*dataSize); i<list.size(); i++){
 
             double net = ((list.get(i).getHeight()  * weights[0]) + (list.get(i).getHeight() * weights[1])
                     + (list.get(i).getGender() * weights[2]));
@@ -110,10 +134,13 @@ public class Project2 {
                 out = 0;
             }
 
-            if (list.get(i).getGender() == Math.round(out)) {
-                error += Math.pow(2, list.get(i).getGender() - net);
+            if(list.get(i).getGender() == Math.round(out)){
+                correctCount++;
             }
+            else { incorrectCount++; }
         }
+        
+        error = (correctCount - incorrectCount) / list.size();
         System.out.println("Error for weight: "+error);
 
         return error;
