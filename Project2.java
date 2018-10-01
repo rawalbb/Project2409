@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 public class Project2 {
     public static void main(String[] args) throws IOException {
-        System.out.println("here");
         List<Person> allData = readData();
         double alpha = 0.3;
 
@@ -16,7 +15,7 @@ public class Project2 {
 //        softActivation(0.25, alpha, allData);
     }
 
-    public static List<Person> readData() throws IOException {
+    private static List<Person> readData() throws IOException {
         ArrayList<Person> allDataPoints = new ArrayList<>();
         File dataFile = new File("data.csv");
         Scanner scanFile = new Scanner(dataFile);
@@ -31,28 +30,28 @@ public class Project2 {
         return allDataPoints;
     }
 
-    public static void hardActivation(double trainingData, double learning, List<Person> list) {
+    private static void hardActivation(double trainingData, double learning, List<Person> list) {
 
-        double net = 0.0;
-        double weightMultiplier = 0.0;
-        double[] weights = {10897,20976,0};
+        double net;
+        double weightMultiplier;
+        double[] weights = {1,2,1};
         double[] weightChange = new double[3];
         double error = 10;
 
         int count = 0;//todo delete
 
 
-   //     while (error > 0.00005 | count!=10) {
-            for (int i = 0; i < 10 //(list.size() * trainingData)
-                    ; i++) {
+        while (error > 0.00005 | count!=10) {
+            for (int i = 0; i < (list.size() * trainingData); i++) {
                 int out;
-                net = ((list.get(i).getHeight() * weights[0]) + (list.get(i).getHeight() * weights[1])
-                        + (list.get(i).getGender() * weights[2]));
+                net = ((list.get(i).getHeight() * weights[0]) + (list.get(i).getHeight() * weights[1]) + (list.get(i).getGender() * weights[2]));
+
                 if (net > 0) {
                     out = 1;
                 } else {
                     out = 0;
                 }
+
                 weightMultiplier = learning * (list.get(i).getGender() - out);
                 weightChange[0] = list.get(i).getHeight() * weightMultiplier;
                 weightChange[1] = list.get(i).getWeight() * weightMultiplier;
@@ -66,12 +65,12 @@ public class Project2 {
             count++;
         }
 
-//    }
+    }
 
     public static void softActivation(double trainingData, double learning, List<Person> list) {
 
         double net = 0.0;
-        double weightMultiplier = 0.0;
+        double weightMultiplier;
         double[] weights = {1,2,0};
         double[] weightChange = new double[3];
         double error = 0;
@@ -97,8 +96,8 @@ public class Project2 {
         }
     }
 
-    public static double errorCalculation(List<Person> list, double dataSize, double[] weights){
-        double error = 0;
+    private static double errorCalculation(List<Person> list, double dataSize, double[] weights){
+        double error;
         int out;
         double correctCount = 0;
         double incorrectCount = 0;
@@ -139,7 +138,7 @@ public class Project2 {
             }
             else { incorrectCount++; }
         }
-        
+
         error = (correctCount - incorrectCount) / list.size();
         System.out.println("Error for weight: "+error);
 
@@ -149,25 +148,25 @@ public class Project2 {
 
 class Person {
 
-    private double height;
-    private double weight;
-    private int gender;
+    public double height;
+    public double weight;
+    public int gender;
 
-    public Person(double height, double weight, int gender) {
+    Person(double height, double weight, int gender) {
         this.height = height;
         this.weight = weight;
         this.gender = gender;
     }
 
-    public double getHeight() {
+    double getHeight() {
         return this.height;
     }
 
-    public double getWeight() {
+    double getWeight() {
         return this.weight;
     }
 
-    public int getGender() {
+    int getGender() {
         return this.gender;
     }
 }
