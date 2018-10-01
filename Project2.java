@@ -1,17 +1,18 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Project2 {
     public static void main(String[] args) throws IOException {
-        ArrayList<Person> allData = new ArrayList<Person>();
+        List<Person> allData = new ArrayList<Person>();
         double alpha = 0.3;
         readData();
-        hardActivation(0.75, alpha, allData);
+      //  hardActivation(0.75, alpha, allData);
         softActivation(0.75, alpha, allData);
-        hardActivation(0.25, alpha, allData);
-        softActivation(0.25, alpha, allData);
+//        hardActivation(0.25, alpha, allData);
+//        softActivation(0.25, alpha, allData);
     }
 
     public static void readData() throws IOException {
@@ -28,7 +29,7 @@ public class Project2 {
         scanFile.close();
     }
 
-    public static void hardActivation(double trainingData, double learning, ArrayList<Person> list) {
+    public static void hardActivation(double trainingData, double learning, List<Person> list) {
 
         double net = 0.0;
         double weightMultiplier = 0.0;
@@ -59,31 +60,52 @@ public class Project2 {
 
     }
 
-    public static void softActivation(double trainingData, double learning, ArrayList<Person> list) {
+    public static void softActivation(double trainingData, double learning, List<Person> list) {
 
         double net = 0.0;
         double weightMultiplier = 0.0;
         double[] weights = new double[3];
         double[] weightChange = new double[3];
         double error = 0;
+        int count = 0;//todo delete
 
-        while (error > 0.00005) {
+        while (error > 0.00005| count != 10) {
             for (int i = 0; i < (list.size() * trainingData); i++) {
                 int out;
                 net = ((list.get(i).getHeight() * weights[0]) + (list.get(i).getHeight() * weights[1])
                         + (list.get(i).getGender() * weights[2]));
                 
-                out = 1 / ( 1 + Math.exp(net * -1));
+                out = (int) (1 / ( 1 + Math.exp(net * -1)));
                 weightMultiplier = learning * (list.get(i).getGender() - out);
                 weightChange[0] = list.get(i).getHeight() * weightMultiplier;
                 weightChange[1] = list.get(i).getWeight() * weightMultiplier;
                 weightChange[2] = list.get(i).getGender() * weightMultiplier;
 
+                error =  errorCalculation(list, 0.25, weights);
+
                 for (int j = 0; j < weights.length; j++) {
                     weights[j] = weights[j] - weightChange[j];
                 }
+
+            }
+            count++;//todo delete
+        }
+    }
+
+    public static double errorCalculation(List<Person> list, double dataSize, double[] weights){
+        double error = 0;
+        for(int i = (int) (dataSize*100); i<list.size(); i++ ) {
+
+            double net = ((list.get(i).getHeight()  * weights[0]) + (list.get(i).getHeight() * weights[1])
+                    + (list.get(i).getGender() * weights[2]));
+
+            if (list.get(i).getGender() == Math.round(net)) {
+                error += Math.pow(2, list.get(i).getGender() - net);
             }
         }
+        System.out.println("Error for weight: "+error);
+
+        return error;
     }
 }
 
