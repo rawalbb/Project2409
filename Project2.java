@@ -12,15 +12,15 @@ public class Project2 {
         double alpha = 0.3;
         double bias = 300;
 
-        hardActivation(0.75, alpha, allData, bias);
-//        softActivation(0.75, alpha, allData, bias);
+        //hardActivation(0.75, alpha, allData, bias);
+        softActivation(0.75, alpha, allData, bias);
 //        hardActivation(0.25, alpha, allData);
 //        softActivation(0.25, alpha, allData);
     }
 
     private static List<Person> readData() throws IOException {
         ArrayList<Person> allDataPoints = new ArrayList<>();
-        File dataFile = new File("data.txt");
+        File dataFile = new File("data.csv");
         Scanner scanFile = new Scanner(dataFile);
 
         while (scanFile.hasNextLine()) {
@@ -82,37 +82,38 @@ public class Project2 {
 
         double net = 0.0;
         double weightMultiplier;
-        double[] weights = {1,2,1};
+        double[] weights = {1,2,-1};
         double[] weightChange = new double[3];
         double error = 1;
         double count = 0;
 
         while (error > 0.00005) {
-            if(count == 1000){
+            if(count == 3){
                 System.out.println("not good enough");
                 break;
             }
             for (int i = 0; i < (list.size() * trainingData); i++) {
-                int out;
+                double out;
                 net = ((list.get(i).getHeight() * weights[0]) + (list.get(i).getWeight() * weights[1])
                         + (list.get(i).getGender() * weights[2]));
+                System.out.println("HHERE IS :::::::::  " + net);
+                out = (1 / ( 1 + Math.exp(net * -1)));
                 
-                out = (int) (1 / ( 1 + Math.exp(net * -1)));
                 weightMultiplier = learning * (list.get(i).getGender() - out);
                 weightChange[0] = list.get(i).getHeight() * weightMultiplier;
                 weightChange[1] = list.get(i).getWeight() * weightMultiplier;
                 weightChange[2] = bias * weightMultiplier;
 
-                error = errorCalculation(list, trainingData, weights, bias);
+                error = errorCalc2(list, trainingData, weights, bias);
                 System.out.println(error);
                 for (int j = 0; j < weights.length; j++) {
                     weights[j] = weights[j] - weightChange[j];
                 }
+                System.out.println(weights[0]+weights[1]+weights[2]);
 
             }
             count++;
         }
-        System.out.println(weights[0]+weights[1]+weights[2]);
     }
 
     private static double errorCalculation(List<Person> list, double dataSize, double[] weights, double bias){
@@ -120,25 +121,6 @@ public class Project2 {
         int out;
         double correctCount = 0;
         double incorrectCount = 0;
-
-//        for(int i = 10; i<20;     //list.size();
-//            i++ ) {
-//
-//            double net = ((list.get(i).getHeight()  * weights[0]) + (list.get(i).getHeight() * weights[1])
-//                    + (list.get(i).getGender() * weights[2]));
-//
-//            if (net > 0) {
-//                out = 1;
-//            } else {
-//                out = 0;
-//            }
-//
-//            //if (list.get(i).getGender() == Math.round(out)) {
-//            //numMenCorrect++;
-//                error += Math.pow(list.get(i).getGender() - out, 2);
-//           // }
-//        }
-
 
 
         for (int i = (int) (list.size()*dataSize); i<list.size(); i++){
@@ -161,6 +143,25 @@ public class Project2 {
         error = incorrectCount/list.size();
         //System.out.println("Error for weight: "+error);
 
+        return error;
+    }
+    
+    private static double errorCalc2(List<Person> list, double dataSize, double[] weights, double bias){
+        double error = 0;
+        double correctCount = 0;
+        double incorrectCount = 0;
+
+
+        for (int i = (int) (list.size()*dataSize); i<list.size(); i++){
+
+        	double net = ((list.get(i).getHeight() * weights[0]) + (list.get(i).getWeight() * weights[1])
+                    + (list.get(i).getGender() * weights[2]));
+            
+            int out = (int) (1 / ( 1 + Math.exp(net * -1)));
+            double error1 = list.get(i).getGender() - out;
+            //System.out.println("OUT " + out + "Desired " + list.get(i).getGender() + " =  "+ error1);
+            error+= error1;
+        }
         return error;
     }
 }
